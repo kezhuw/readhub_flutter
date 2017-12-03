@@ -10,8 +10,9 @@ DISCLAIMER: This project do not claims any proprietorship to assets, including b
 
 ## Getting Started
 
-For help getting started with Flutter, view our online
-[documentation](http://flutter.io/).
+For help getting started with Flutter, view online [documentation](http://flutter.io/).
+
+Flutter evolves quickly, breaking API is likelihood to happen. This project is compatible with version 0.0.18.
 
 ## Known Issues
 
