@@ -10,7 +10,14 @@ import 'package:readhub_flutter/widgets/WorldClock.dart';
 
 final Store<AppState> store = createStore();
 
-final Widget _mainPage = new MainPage();
+final Widget _app = new MaterialApp(
+  title: 'Readhub',
+  theme: new ThemeData(
+    primarySwatch: Colors.blue,
+    scaffoldBackgroundColor: Colors.white,
+  ),
+  home: new MainPage(),
+);
 
 class ReadhubApp extends StatelessWidget {
   @override
@@ -18,14 +25,7 @@ class ReadhubApp extends StatelessWidget {
     return new StoreProvider(
       store: store,
       child: new WorldClock(
-        child: new MaterialApp(
-          title: 'Readhub',
-          theme: new ThemeData(
-            primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: Colors.white,
-          ),
-          home: new MainPage(),
-        ),
+        child: _app,
       ),
     );
   }
