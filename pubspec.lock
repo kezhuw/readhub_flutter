@@ -76,17 +76,17 @@ packages:
   flutter:
     description: flutter
     source: sdk
-    version: "0.0.39-dev"
+    version: "0.0.38"
   flutter_redux:
     description:
       name: flutter_redux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2"
+    version: "0.3.4"
   flutter_test:
     description: flutter
     source: sdk
-    version: "0.0.17-dev"
+    version: "0.0.16"
   front_end:
     description:
       name: front_end
@@ -224,13 +224,13 @@ packages:
       name: quiver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.26.2"
+    version: "0.26.0"
   redux:
     description:
       name: redux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.4"
   redux_thunk:
     description:
       name: redux_thunk
