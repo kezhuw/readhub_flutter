@@ -20,9 +20,9 @@ For help getting started with Flutter, view our online
   occasionally. I do encounter multiple news having same timestamp.
 
 ## TODO
-[ ] Refactor state Store.
-[ ] Preserve independent scroll position cross tabs.
-[ ] Refactor AppBar.
+- [ ] Refactor state Store.
+- [ ] Preserve independent scroll position cross tabs.
+- [ ] Refactor AppBar.
 
 ## License
 Released under The MIT License (MIT). See [LICENSE](LICENSE) for the full license text.
