@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'widgets/app/app.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(new ReadhubApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

@@ -76,11 +76,17 @@ packages:
   flutter:
     description: flutter
     source: sdk
-    version: "0.0.38"
+    version: "0.0.39-dev"
+  flutter_redux:
+    description:
+      name: flutter_redux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.2"
   flutter_test:
     description: flutter
     source: sdk
-    version: "0.0.16"
+    version: "0.0.17-dev"
   front_end:
     description:
       name: front_end
@@ -218,7 +224,19 @@ packages:
       name: quiver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.26.0"
+    version: "0.26.2"
+  redux:
+    description:
+      name: redux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
+  redux_thunk:
+    description:
+      name: redux_thunk
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   shelf:
     description:
       name: shelf
@@ -303,6 +321,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.4"
+  url_launcher:
+    description:
+      name: url_launcher
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   utf:
     description:
       name: utf
