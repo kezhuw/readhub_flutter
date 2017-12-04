@@ -28,6 +28,7 @@ Flutter evolves quickly, breaking API is likelihood to happen. This project is c
 - [ ] Preserve independent scroll position cross tabs.
 - [ ] Refactor AppBar.
 - [ ] Refine network error handling.
+- [ ] Selectable text.
 
 ## License
 Released under The MIT License (MIT). See [LICENSE](LICENSE) for the full license text.
