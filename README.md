@@ -17,8 +17,8 @@ Flutter evolves quickly, breaking API is likelihood to happen. This project is c
 ## Known Issues
 
 * API endpoints '/news' and '/technews' use timestamp as the sole cursor to paging data,
-  if multiple entries with same timestamp exist, you may see duplicated news in list view
-  occasionally. I do encounter multiple news having same timestamp.
+  if multiple entries with same timestamp exist, you may see duplicated news at page boundary
+  in list view occasionally. I do encounter multiple news having same timestamp.
 * The 'pull to refresh' functionality for endpoints '/news' and '/technews' merge newer news
   and old news, but if there is no conjunction between, old news are discarded. Thus, you may
   notice that 'more news' fetchs data you already viewed.
