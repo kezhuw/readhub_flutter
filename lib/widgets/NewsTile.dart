@@ -53,7 +53,7 @@ class NewsTile extends StatelessWidget {
           new Text(news.title, style: titleStyle),
           new Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: new Text(news.summary.replaceAll(new RegExp('\n'), ' '), maxLines: maxLines, style: bodyStyle)
+            child: new Text(news.summary?.replaceAll(new RegExp('\n'), ' ') ?? '', maxLines: maxLines, style: bodyStyle)
           ),
           new ElapsedTimeTitle(title: _buildNewsSource(news.siteName, news.authorName), style: bodyStyle, time: news.publishDate),
         ],
