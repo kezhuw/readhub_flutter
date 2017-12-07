@@ -7,15 +7,13 @@ import 'package:redux_thunk/redux_thunk.dart';
 
 import 'package:http/http.dart' as http;
 
+import 'package:readhub_flutter/configs/configs.dart';
 import 'package:readhub_flutter/envs/http.dart';
 import 'package:readhub_flutter/utils/FetchProgress.dart';
-
 import 'package:readhub_flutter/models/topic.dart';
 import 'package:readhub_flutter/models/news.dart';
 
 final http.Client _http = createApiClient();
-
-const Duration _kFetchTimeoutDuration = const Duration(seconds: 12);
 
 class NewsState {
   NewsState({@required this.endpoint, List<WebNews> news}) : _news = news ?? <WebNews>[];
@@ -40,7 +38,7 @@ class NewsState {
       return null;
     }
     DateTime cursor = new DateTime.now();
-    _newerNewsFetchProgress = _fetchMoreNews(after: cursor).timeout(_kFetchTimeoutDuration);
+    _newerNewsFetchProgress = _fetchMoreNews(after: cursor).timeout(kNetworkTimeoutDuration);
     return cursor;
   }
 
@@ -96,7 +94,7 @@ class NewsState {
     if (_moreNewsFetchProgress is Future) {
       return;
     }
-    _moreNewsFetchProgress = _fetchMoreNews().timeout(_kFetchTimeoutDuration);
+    _moreNewsFetchProgress = _fetchMoreNews().timeout(kNetworkTimeoutDuration);
   }
 
   Future<Iterable<WebNews>> waitMoreNews() {
@@ -154,7 +152,7 @@ class AppState {
     }
     dynamic progress = _fetchingTopics[topicId];
     if (progress == null || progress is! Future) {
-      _fetchingTopics[topicId] = _fetchTopic(topicId).timeout(_kFetchTimeoutDuration);
+      _fetchingTopics[topicId] = _fetchTopic(topicId).timeout(kNetworkTimeoutDuration);
     }
   }
 
@@ -210,7 +208,7 @@ class AppState {
     if (_latestTopics.isEmpty) {
       return null;
     }
-    _newerTopicsFuture = _fetchNewerTopics().timeout(_kFetchTimeoutDuration);
+    _newerTopicsFuture = _fetchNewerTopics().timeout(kNetworkTimeoutDuration);
     return _newerTopicsCursor;
   }
 
@@ -270,7 +268,7 @@ class AppState {
     if (_moreTopicsFetchProgress is Future) {
       return null;
     }
-    _moreTopicsFetchProgress = _fetchMoreTopics().timeout(_kFetchTimeoutDuration);
+    _moreTopicsFetchProgress = _fetchMoreTopics().timeout(kNetworkTimeoutDuration);
     return _latestTopics.isEmpty ? "" : _topics[_latestTopics.last].order;
   }
 
