@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 
-import 'package:readhub_flutter/store/store.dart';
+import 'package:readhub_flutter/utils/FetchProgress.dart';
 
 @immutable
 class FetchProgressPlaceholder extends StatelessWidget {

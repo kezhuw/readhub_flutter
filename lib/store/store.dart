@@ -8,6 +8,7 @@ import 'package:redux_thunk/redux_thunk.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:readhub_flutter/envs/http.dart';
+import 'package:readhub_flutter/utils/FetchProgress.dart';
 
 import 'topic.dart';
 import 'news.dart';
@@ -15,27 +16,6 @@ import 'news.dart';
 final http.Client _http = createApiClient();
 
 const Duration _kFetchTimeoutDuration = const Duration(seconds: 12);
-
-enum FetchStatus {
-  none,
-  busy,
-  exception,
-  completed,
-}
-
-@immutable
-class FetchProgress {
-  const FetchProgress._fetchProgress({@required this.status, this.exception});
-
-  final FetchStatus status;
-  final dynamic exception;
-
-  static const none = const FetchProgress._fetchProgress(status: FetchStatus.none);
-  static const busy = const FetchProgress._fetchProgress(status: FetchStatus.busy);
-  static const completed = const FetchProgress._fetchProgress(status: FetchStatus.completed);
-
-  const FetchProgress.error(this.exception) : status = FetchStatus.none;
-}
 
 class NewsState {
   NewsState({@required this.endpoint, List<WebNews> news}) : _news = news ?? <WebNews>[];
