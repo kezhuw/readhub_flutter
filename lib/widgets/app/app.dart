@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:redux/redux.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:storey/storey.dart';
+import 'package:flutter_storey/flutter_storey.dart';
 
 import 'package:readhub_flutter/store/store.dart';
 

@@ -1,14 +1,16 @@
-import 'dart:async';
-
 import 'package:meta/meta.dart';
+
+import 'package:quiver/core.dart';
+import 'package:quiver/collection.dart';
+
 import 'package:flutter/material.dart';
 
-import 'package:redux/redux.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:storey/storey.dart';
+import 'package:flutter_storey/flutter_storey.dart';
 
 import 'package:readhub_flutter/utils/FetchProgress.dart';
 import 'package:readhub_flutter/models/topic.dart';
-import 'package:readhub_flutter/store/store.dart';
+import 'package:readhub_flutter/store/topic/store.dart';
 import 'package:readhub_flutter/widgets/TopicTile.dart';
 import 'package:readhub_flutter/widgets/FetchProgressPlaceholder.dart';
 
@@ -17,14 +19,26 @@ class _TopicTabModel {
 
   final List<Topic> latestTopics;
   final FetchProgress fetchProgress;
-}
 
-_TopicTabModel _fromStore(Store<AppState> store) {
-  AppState state = store.state;
-  return new _TopicTabModel(
-    latestTopics: state.topics.latestTopics,
-    fetchProgress: state.topics.moreTopicFetchProgress,
-  );
+  @override
+  bool operator ==(dynamic other) {
+    if (other is! _TopicTabModel) {
+      return false;
+    }
+    _TopicTabModel typedOther = other;
+    return listsEqual(latestTopics, typedOther.latestTopics) && fetchProgress == typedOther.fetchProgress;
+  }
+
+  @override
+  int get hashCode => hash2(hashObjects(latestTopics), fetchProgress);
+
+  static _TopicTabModel fromStore(Store<TopicState> store) {
+    TopicState state = store.state;
+    return new _TopicTabModel(
+      latestTopics: state.latestTopics,
+      fetchProgress: state.moreTopicFetchProgress,
+    );
+  }
 }
 
 final int _kMaxDisplayTopicNews = 3;
@@ -33,8 +47,8 @@ final int _kMaxDisplayTopicNews = 3;
 class TopicTab extends StatelessWidget {
 
   void _fetchMoreTopic(BuildContext context) {
-    Store<AppState> store = new StoreProvider.of(context).store;
-    store.dispatch(fetchMoreTopics);
+    Store<TopicState> store = StoreProvider.of(context);
+    store.dispatch(new ThunkAction<TopicState, Null>(fetchMoreTopics));
   }
 
   Widget _buildItem(BuildContext context, _TopicTabModel model, int index) {
@@ -55,14 +69,18 @@ class TopicTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BorderSide borderSide = new BorderSide(color: Theme.of(context).dividerColor, width: 0.0);
-    Store<AppState> store = new StoreProvider<AppState>.of(context).store;
     return new StoreConnector(
+      converter: _TopicTabModel.fromStore,
+      path: const [const ValueKey<String>('topics')],
       builder: (BuildContext context, _TopicTabModel model) {
         return new Container(
           color: Theme.of(context).canvasColor,
           child: new RefreshIndicator(
-            onRefresh: () async {
-              await fetchNewerTopics(store);
+            onRefresh: () {
+              Store<TopicState> store = StoreProvider.of(context);
+              ThunkAction<TopicState, Null> action = new ThunkAction<TopicState, Null>(fetchNewerTopics);
+              store.dispatch(action);
+              return action.result;
             },
             child: new ListView.builder(
               itemBuilder: (BuildContext context, int index) {
@@ -88,7 +106,6 @@ class TopicTab extends StatelessWidget {
           ),
         );
       },
-      converter: _fromStore,
     );
   }
 }

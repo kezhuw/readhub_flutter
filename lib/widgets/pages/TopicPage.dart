@@ -1,8 +1,11 @@
 import 'package:meta/meta.dart';
+
+import 'package:quiver/core.dart';
+
 import 'package:flutter/material.dart';
 
-import 'package:redux/redux.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:storey/storey.dart';
+import 'package:flutter_storey/flutter_storey.dart';
 
 import 'package:readhub_flutter/utils/FetchProgress.dart';
 import 'package:readhub_flutter/models/topic.dart';
@@ -16,11 +19,23 @@ class _TopicModel {
   final String topicId;
   final Topic topic;
   final FetchProgress fetchProgress;
-}
 
-_TopicModel _fromStore(Store<AppState> store, String topicId) {
-  AppState state = store.state;
-  return new _TopicModel(topicId: topicId, topic: state.topics.getTopic(topicId), fetchProgress: state.topics.getTopicFetchProgress(topicId));
+  @override
+  bool operator ==(dynamic other) {
+    if (other is! _TopicModel) {
+      return false;
+    }
+    _TopicModel typedOther = other;
+    return topicId == typedOther.topicId && topic == typedOther.topic && fetchProgress == typedOther.fetchProgress;
+  }
+
+  @override
+  int get hashCode => hash3(topicId, topic, fetchProgress);
+
+  static _TopicModel fromStore(Store<TopicState> store, String topicId) {
+    TopicState state = store.state;
+    return new _TopicModel(topicId: topicId, topic: state.getTopic(topicId), fetchProgress: state.getTopicFetchProgress(topicId));
+  }
 }
 
 @immutable
@@ -103,8 +118,8 @@ class _Topic extends StatelessWidget {
   }
 
   void _fetchTopic(BuildContext context) {
-    Store<AppState> store = new StoreProvider<AppState>.of(context).store;
-    store.dispatch(fetchTopic(model.topicId));
+    Store<TopicState> store = StoreProvider.of(context, debugTypeMatcher: const TypeMatcher<TopicState>());
+    store.dispatch(new ThunkAction<TopicState, Null>(fetchTopic(model.topicId)));
   }
 
   Widget _buildBody(BuildContext context) {
@@ -165,11 +180,12 @@ class TopicPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new StoreConnector<AppState, _TopicModel>(
-      converter: (Store<AppState> store) {
-        return _fromStore(store, topicId);
+    return new StoreConnector<TopicState, _TopicModel>(
+      converter: (Store<TopicState> store) {
+        return _TopicModel.fromStore(store, topicId);
       },
-      distinct: true,
+      path: const [const ValueKey<String>('topics')],
+      equals: identical,
       builder: (BuildContext context, _TopicModel model) {
         return new _Topic(model: model);
       },

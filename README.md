@@ -24,7 +24,7 @@ Flutter evolves quickly, breaking API is likelihood to happen. This project is c
   notice that 'more news' fetchs data you already viewed.
 
 ## TODO
-- [ ] Refactor state Store.
+- [x] Refactor state Store.
 - [ ] Preserve independent scroll position cross tabs.
 - [ ] Refactor AppBar.
 - [ ] Refine network error handling.

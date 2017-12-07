@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart';
 
+import 'package:storey/storey.dart';
+
 import 'package:readhub_flutter/configs/configs.dart';
 import 'package:readhub_flutter/envs/api.dart';
 import 'package:readhub_flutter/utils/FetchProgress.dart';
@@ -114,4 +116,86 @@ class NewsState {
       _news.addAll(news);
     }
   }
+}
+
+@immutable
+class RequestNewerNewsAction extends RequestAction<dynamic> {
+  RequestNewerNewsAction();
+}
+
+@immutable
+class CompleteNewerNewsAction extends Action {
+  const CompleteNewerNewsAction({this.cursor, this.news});
+
+  final dynamic cursor;
+  final Iterable<WebNews> news;
+}
+
+NewsState _handleRequestNewerNewsAction(NewsState state, RequestNewerNewsAction action) {
+  action.result = state.requestNewerNews();
+  return state;
+}
+
+NewsState _handleCompleteNewerNewsAction(NewsState state, CompleteNewerNewsAction action) {
+  return state..completeNewerNews(cursor: action.cursor, news: action.news);
+}
+
+Future<Null> fetchNewerNews(Store<NewsState> store) async {
+  NewsState state = store.state;
+  RequestNewerNewsAction request = new RequestNewerNewsAction();
+  store.dispatch(request);
+  dynamic cursor = request.result;
+  try {
+    Iterable<WebNews> news = await state.waitNewerNews();
+    store.dispatch(new CompleteNewerNewsAction(cursor: cursor, news: news));
+  } catch (e) {
+    store.dispatch(new CompleteNewerNewsAction(cursor: cursor, news: const Iterable<WebNews>.empty()));
+  }
+}
+
+@immutable
+class RequestMoreNewsAction extends Action {
+  const RequestMoreNewsAction();
+}
+
+@immutable
+class CompleteMoreNewsAction extends Action {
+  const CompleteMoreNewsAction({this.news, this.error});
+
+  final Iterable<WebNews> news;
+  final dynamic error;
+}
+
+NewsState _handleRequestMoreNewsAction(NewsState state, RequestMoreNewsAction action) {
+  return state..requestMoreNews();
+}
+
+NewsState _handleCompleteMoreNewsAction(NewsState state, CompleteMoreNewsAction action) {
+  return state..completeMoreNews(news: action.news, error: action.error);
+}
+
+Future<Null> fetchMoreNews(Store<NewsState> store) async {
+  store.dispatch(const RequestMoreNewsAction());
+  try {
+    Iterable<WebNews> news = await store.state.waitMoreNews();
+    store.dispatch(new CompleteMoreNewsAction(news: news));
+  } catch (e) {
+    store.dispatch(new CompleteMoreNewsAction(error: e));
+  }
+}
+
+final Reducer<NewsState> _reducer = new MergedTypedReducer<NewsState>(
+  [
+    new ProxyTypedReducer<NewsState, RequestNewerNewsAction>(_handleRequestNewerNewsAction),
+    new ProxyTypedReducer<NewsState, CompleteNewerNewsAction>(_handleCompleteNewerNewsAction),
+    new ProxyTypedReducer<NewsState, RequestMoreNewsAction>(_handleRequestMoreNewsAction),
+    new ProxyTypedReducer<NewsState, CompleteMoreNewsAction>(_handleCompleteMoreNewsAction),
+  ]
+);
+
+Store<NewsState> createNewsStore(String endpoint) {
+  return new Store<NewsState>(
+    initialState: new NewsState(endpoint: endpoint),
+    reducer: _reducer,
+  );
 }

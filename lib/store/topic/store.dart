@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart';
 
+import 'package:storey/storey.dart';
+
 import 'package:readhub_flutter/configs/configs.dart';
 import 'package:readhub_flutter/envs/api.dart';
 import 'package:readhub_flutter/utils/FetchProgress.dart';
@@ -190,4 +192,132 @@ class TopicState {
     });
     _latestTopics.addAll(ids);
   }
+}
+
+
+@immutable
+class RequestTopicFetchAction extends Action {
+  const RequestTopicFetchAction(this.topicId);
+
+  final String topicId;
+}
+
+@immutable
+class CompleteTopicFetchAction extends Action {
+  const CompleteTopicFetchAction({@required this.topicId, this.topic, this.error});
+
+  final String topicId;
+  final Topic topic;
+  final dynamic error;
+}
+
+TopicState handleRequestTopicFetchAction(TopicState state, RequestTopicFetchAction action) {
+  return state..requestTopicFetch(action.topicId);
+}
+
+TopicState handleCompleteTopicFetchAction(TopicState state, CompleteTopicFetchAction action) {
+  return state..completeTopicFetch(topicId: action.topicId, topic: action.topic, error: action.error);
+}
+
+Thunk<TopicState, Null> fetchTopic(String topicId) {
+  return (Store<TopicState> store) async {
+    TopicState state = store.state;
+    store.dispatch(new RequestTopicFetchAction(topicId));
+    try {
+      final Topic topic = await state.waitTopicFetch(topicId);
+      store.dispatch(new CompleteTopicFetchAction(topicId: topicId, topic: topic));
+    } catch (e) {
+      store.dispatch(new CompleteTopicFetchAction(topicId: topicId, error: e));
+    }
+  };
+}
+
+@immutable
+class RequestNewerTopicsAction extends RequestAction<String> {
+  RequestNewerTopicsAction();
+}
+
+
+@immutable
+class CompleteNewerTopicsAction extends Action {
+  const CompleteNewerTopicsAction({this.cursor, this.topics});
+
+  final String cursor;
+  final List<Topic> topics;
+}
+
+TopicState handleRequestNewerTopicsAction(TopicState state, RequestNewerTopicsAction action) {
+  action.result = state.requestNewerTopics();
+  return state;
+}
+
+TopicState handleCompleteNewerTopicsAction(TopicState state, CompleteNewerTopicsAction action) {
+  return state..completeNewerTopics(cursor: action.cursor, topics: action.topics);
+}
+
+Future<Null> fetchNewerTopics(Store<TopicState> store) async {
+  TopicState state = store.state;
+  RequestNewerTopicsAction request = new RequestNewerTopicsAction();
+  store.dispatch(request);
+  String cursor = request.result;
+  try {
+    List<Topic> topics = await state.waitNewerTopics();
+    store.dispatch(new CompleteNewerTopicsAction(cursor: cursor, topics: topics));
+  } catch (e) {
+    store.dispatch(new CompleteNewerTopicsAction(cursor: cursor, topics: const <Topic>[]));
+  }
+}
+
+@immutable
+class RequestMoreTopicsAction extends RequestAction<String> {
+  RequestMoreTopicsAction();
+}
+
+@immutable
+class CompleteMoreTopicsAction extends Action {
+  const CompleteMoreTopicsAction({@required this.cursor, this.topics, this.error});
+
+  final String cursor;
+  final Iterable<Topic> topics;
+  final dynamic error;
+}
+
+TopicState handleRequestMoreTopicsAction(TopicState state, RequestMoreTopicsAction action) {
+  action.result = state.requestMoreTopics();
+  return state;
+}
+
+TopicState handleCompleteMoreTopicsAction(TopicState state, CompleteMoreTopicsAction action) {
+  return state..completeMoreTopics(cursor: action.cursor, topics: action.topics, error: action.error);
+}
+
+Future<Null> fetchMoreTopics(Store<TopicState> store) async {
+  TopicState state = store.state;
+  RequestMoreTopicsAction request = new RequestMoreTopicsAction();
+  store.dispatch(request);
+  String cursor = request.result;
+  try {
+    final Iterable<Topic> topics = await state.waitMoreTopic();
+    store.dispatch(new CompleteMoreTopicsAction(cursor: cursor, topics: topics));
+  } on Exception catch (e) {
+    store.dispatch(new CompleteMoreTopicsAction(cursor: cursor, error: e));
+  }
+}
+
+final Reducer<TopicState> _reducer = new MergedTypedReducer<TopicState>(
+  [
+    new ProxyTypedReducer<TopicState, RequestTopicFetchAction>(handleRequestTopicFetchAction),
+    new ProxyTypedReducer<TopicState, CompleteTopicFetchAction>(handleCompleteTopicFetchAction),
+    new ProxyTypedReducer<TopicState, RequestNewerTopicsAction>(handleRequestNewerTopicsAction),
+    new ProxyTypedReducer<TopicState, CompleteNewerTopicsAction>(handleCompleteNewerTopicsAction),
+    new ProxyTypedReducer<TopicState, RequestMoreTopicsAction>(handleRequestMoreTopicsAction),
+    new ProxyTypedReducer<TopicState, CompleteMoreTopicsAction>(handleCompleteMoreTopicsAction),
+  ]
+);
+
+Store<TopicState> createTopicStore() {
+  return new Store<TopicState>(
+    initialState: new TopicState(),
+    reducer: _reducer,
+  );
 }
