@@ -22,8 +22,8 @@ class _TopicTabModel {
 _TopicTabModel _fromStore(Store<AppState> store) {
   AppState state = store.state;
   return new _TopicTabModel(
-    latestTopics: state.latestTopics,
-    fetchProgress: state.moreTopicFetchProgress,
+    latestTopics: state.topics.latestTopics,
+    fetchProgress: state.topics.moreTopicFetchProgress,
   );
 }
 

@@ -20,7 +20,7 @@ class _TopicModel {
 
 _TopicModel _fromStore(Store<AppState> store, String topicId) {
   AppState state = store.state;
-  return new _TopicModel(topicId: topicId, topic: state.getTopic(topicId), fetchProgress: state.getTopicFetchProgress(topicId));
+  return new _TopicModel(topicId: topicId, topic: state.topics.getTopic(topicId), fetchProgress: state.topics.getTopicFetchProgress(topicId));
 }
 
 @immutable
