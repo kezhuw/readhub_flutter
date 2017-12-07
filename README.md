@@ -29,6 +29,8 @@ Flutter evolves quickly, breaking API is likelihood to happen. This project is c
 - [ ] Refactor AppBar.
 - [ ] Refine network error handling.
 - [ ] Selectable text.
+- [ ] Misc theme style adjustment.
+- [ ] Smooth animation for collapsable topic tile.
 
 ## License
 Released under The MIT License (MIT). See [LICENSE](LICENSE) for the full license text.
