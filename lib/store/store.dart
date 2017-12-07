@@ -2,125 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:meta/meta.dart';
+import 'package:http/http.dart';
+
 import 'package:redux/redux.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
-import 'package:http/http.dart' as http;
-
 import 'package:readhub_flutter/configs/configs.dart';
-import 'package:readhub_flutter/envs/http.dart';
+import 'package:readhub_flutter/envs/api.dart';
 import 'package:readhub_flutter/utils/FetchProgress.dart';
 import 'package:readhub_flutter/models/topic.dart';
 import 'package:readhub_flutter/models/news.dart';
 
-final http.Client _http = createApiClient();
-
-class NewsState {
-  NewsState({@required this.endpoint, List<WebNews> news}) : _news = news ?? <WebNews>[];
-
-  final List<WebNews> _news;
-  final String endpoint;
-  List<WebNews> get latestNews => _news;
-
-  Future<Iterable<WebNews>> _fetchMoreNews({final DateTime after, final int pageSize = 10}) async {
-    final DateTime lastTimestamp = after ?? (_news.isEmpty ? new DateTime.now() : _news.last.publishDate);
-    final http.Response response = await _http.get('$endpoint?lastCursor=${lastTimestamp.millisecondsSinceEpoch}&pageSize=$pageSize');
-    final Map<String, dynamic> result = JSON.decode(response.body);
-    final List<Map<String, dynamic>> data = result['data'];
-    Iterable<WebNews> news = data.map((Map<String, dynamic> json) => new WebNews.fromJsonObject(json));
-    return news;
-  }
-
-  Future<Iterable<WebNews>> _newerNewsFetchProgress;
-
-  dynamic requestNewerNews() {
-    if (_newerNewsFetchProgress != null || _news.isEmpty) {
-      return null;
-    }
-    DateTime cursor = new DateTime.now();
-    _newerNewsFetchProgress = _fetchMoreNews(after: cursor).timeout(kNetworkTimeoutDuration);
-    return cursor;
-  }
-
-  Future<Iterable<WebNews>> waitNewerNews() {
-    return _newerNewsFetchProgress ?? new Future<Iterable<WebNews>>.value(const Iterable<WebNews>.empty());
-  }
-
-  void completeNewerNews({@required dynamic cursor, @required Iterable<WebNews> news}) {
-    if (cursor == null || _news.isEmpty) {
-      return;
-    }
-    _newerNewsFetchProgress = null;
-    if (news.isEmpty) {
-      return;
-    }
-    final WebNews first = _news.first;
-    bool overlapping = false;
-    // takeWhile happens lazily, use toList to force its evaluation,
-    // otherwise the side effect 'setting overlapping' won't happen.
-    news = news.takeWhile((WebNews news) {
-      if (news.id == first.id) {
-        overlapping = true;
-        return false;
-      }
-      return true;
-    }).toList();
-    if (!overlapping) {
-      _news.clear();
-    }
-    _news.insertAll(0, news);
-  }
-
-
-  dynamic _moreNewsFetchProgress;
-
-  FetchProgress get moreNewsFetchProgress {
-    if (_moreNewsFetchProgress == null) {
-      return FetchProgress.none;
-    }
-    if (identical(_moreNewsFetchProgress, FetchProgress.completed)) {
-      return FetchProgress.completed;
-    }
-    if (_moreNewsFetchProgress is Future) {
-      return FetchProgress.busy;
-    }
-    return new FetchProgress.error(_moreNewsFetchProgress);
-  }
-
-  void requestMoreNews() {
-    if (identical(_moreNewsFetchProgress, FetchProgress.completed)) {
-      return;
-    }
-    if (_moreNewsFetchProgress is Future) {
-      return;
-    }
-    _moreNewsFetchProgress = _fetchMoreNews().timeout(kNetworkTimeoutDuration);
-  }
-
-  Future<Iterable<WebNews>> waitMoreNews() {
-    assert(_moreNewsFetchProgress != null);
-    if (identical(_moreNewsFetchProgress, FetchProgress.completed)) {
-      return new Future<Iterable<WebNews>>.value(const Iterable<WebNews>.empty());
-    }
-    if (_moreNewsFetchProgress is! Future) {
-      return new Future<Iterable<WebNews>>.error(_moreNewsFetchProgress);
-    }
-    return _moreNewsFetchProgress as Future<List<WebNews>>;
-  }
-
-  void completeMoreNews({Iterable<WebNews> news, dynamic error}) {
-    assert(news == null || error == null);
-    _moreNewsFetchProgress = error;
-    if (news == null) {
-      return;
-    }
-    if (news.isEmpty) {
-      _moreNewsFetchProgress = FetchProgress.completed;
-    } else {
-      _news.addAll(news);
-    }
-  }
-}
+import 'news/store.dart';
+export 'news/store.dart';
 
 class AppState {
   final Map<String, Topic> _topics = new Map<String, Topic>();
@@ -140,7 +34,7 @@ class AppState {
   }
 
   Future<Topic> _fetchTopic(String topicId) async {
-    final http.Response response = await _http.get('/topic/$topicId');
+    final Response response = await api.get('/topic/$topicId');
     Map<String, dynamic> result = JSON.decode(response.body);
     return new Topic.fromJsonObject(result);
   }
@@ -188,7 +82,7 @@ class AppState {
   Future<Iterable<String>> _fetchNewerTopicIds() async {
     assert(_latestTopics.isNotEmpty);
     final String latestCursor = _newerTopicsCursor;
-    final http.Response response = await _http.get('/topic/newCount?latestCursor=$latestCursor');
+    final Response response = await api.get('/topic/newCount?latestCursor=$latestCursor');
     Map<String, dynamic> result = JSON.decode(response.body);
     Iterable<String> topicIds = (result['data'] as List<Map<String, dynamic>>).map((Map<String, dynamic> json) => json['id'] as String);
     return topicIds;
@@ -255,7 +149,7 @@ class AppState {
   Future<List<Topic>> _fetchMoreTopics() async {
     const int pageSize = 10;
     final String lastCursor = _moreTopicsCursor();
-    final http.Response response = await _http.get('/topic?lastCursor=$lastCursor&pageSize=$pageSize');
+    final Response response = await api.get('/topic?lastCursor=$lastCursor&pageSize=$pageSize');
     Map result = JSON.decode(response.body);
     final List<Topic> topics = (result["data"] as List<Map<String, dynamic>>).map((m) => new Topic.fromJsonObject(m)).toList();
     return topics;
