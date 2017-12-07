@@ -1,4 +1,4 @@
-import 'package:readhub_flutter/store/news.dart';
+import 'package:readhub_flutter/models/news.dart';
 import 'package:readhub_flutter/utils/FetchProgress.dart';
 
 class NewsTabModel {

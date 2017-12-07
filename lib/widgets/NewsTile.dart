@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:readhub_flutter/store/news.dart';
-
+import 'package:readhub_flutter/models/news.dart';
 import 'package:readhub_flutter/widgets/ElapsedTimeText.dart';
 
 @immutable

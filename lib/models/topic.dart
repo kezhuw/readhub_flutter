@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'news.dart';
+import 'package:readhub_flutter/models/news.dart';
 
 @immutable
 class Topic {

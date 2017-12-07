@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
+import 'package:readhub_flutter/models/news.dart';
 import 'package:readhub_flutter/models/NewsTabModel.dart';
-
-import 'package:readhub_flutter/store/news.dart';
 import 'package:readhub_flutter/store/store.dart';
-
 import 'package:readhub_flutter/widgets/NewsTile.dart';
 import 'package:readhub_flutter/widgets/FetchProgressPlaceholder.dart';
 

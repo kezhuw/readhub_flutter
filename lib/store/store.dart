@@ -10,8 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:readhub_flutter/envs/http.dart';
 import 'package:readhub_flutter/utils/FetchProgress.dart';
 
-import 'topic.dart';
-import 'news.dart';
+import 'package:readhub_flutter/models/topic.dart';
+import 'package:readhub_flutter/models/news.dart';
 
 final http.Client _http = createApiClient();
 

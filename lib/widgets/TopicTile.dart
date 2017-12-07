@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 
-import 'package:readhub_flutter/store/topic.dart';
-import 'package:readhub_flutter/store/news.dart';
+import 'package:readhub_flutter/models/topic.dart';
+import 'package:readhub_flutter/models/news.dart';
 import 'package:readhub_flutter/widgets/ListNews.dart';
 import 'package:readhub_flutter/widgets/pages/TopicPage.dart';
 import 'package:readhub_flutter/widgets/ElapsedTimeText.dart';

@@ -7,7 +7,7 @@ import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import 'package:readhub_flutter/utils/FetchProgress.dart';
-import 'package:readhub_flutter/store/topic.dart';
+import 'package:readhub_flutter/models/topic.dart';
 import 'package:readhub_flutter/store/store.dart';
 import 'package:readhub_flutter/widgets/TopicTile.dart';
 import 'package:readhub_flutter/widgets/FetchProgressPlaceholder.dart';
