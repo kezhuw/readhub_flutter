@@ -78,15 +78,15 @@ class _Topic extends StatelessWidget {
   }
 
   Widget _buildTimeline(BuildContext context) {
-    assert(model.topic != null);
+    final Topic topic = model.topic;
+    assert(topic != null);
+    if (topic.whole && topic.timeline.isEmpty) {
+      return const SizedBox();
+    }
     Widget timeline;
-    if (model.topic is! TracedTopic) {
+    if (!topic.whole) {
       timeline = new FetchProgressPlaceholder(progress: model.fetchProgress, action: () { _fetchTopic(context); });
     } else {
-      final TracedTopic topic = model.topic as TracedTopic;
-      if (topic.timeline == null || topic.timeline.isEmpty) {
-        timeline = const Center(child: const Text('无相关事件'));
-      }
       Iterable<Widget> traces = topic.timeline.map((TopicTrace trace) => _buildTopicTrace(context, trace));
       timeline = new Column(
         children: ListTile.divideTiles(tiles: traces, context: context).toList(),

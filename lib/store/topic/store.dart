@@ -31,12 +31,12 @@ class TopicState {
   Future<Topic> _fetchTopic(String topicId) async {
     final Response response = await api.get('/topic/$topicId');
     Map<String, dynamic> result = JSON.decode(response.body);
-    return new Topic.fromJsonObject(result);
+    return new Topic.fromJsonObject(result, emptyTimeline: const []);
   }
 
   void requestTopicFetch(String topicId) {
     Topic topic = _topics[topicId];
-    if (topic is TracedTopic) {
+    if (topic != null && topic.whole) {
       return;
     }
     dynamic progress = _fetchingTopics[topicId];
@@ -47,7 +47,7 @@ class TopicState {
 
   Future<Topic> waitTopicFetch(String topicId) async {
     Topic topic = _topics[topicId];
-    if (topic is TracedTopic) {
+    if (topic != null && topic.whole) {
       return new Future<Topic>.value(topic);
     }
     dynamic progress = _fetchingTopics[topicId];
@@ -65,7 +65,7 @@ class TopicState {
       _fetchingTopics[topicId] = error;
       return;
     }
-    assert(topic is TracedTopic);
+    assert(topic.whole);
     _topics[topicId] = topic;
     _fetchingTopics.remove(topicId);
   }

@@ -13,6 +13,7 @@ class Topic {
     this.createdAt,
     this.updatedAt,
     this.publishDate,
+    this.timeline,
   });
 
   final String id;
@@ -25,6 +26,10 @@ class Topic {
   final DateTime updatedAt;
   final DateTime publishDate;
 
+  final List<TopicTrace> timeline;
+
+  bool get whole => timeline != null;
+
   List<WebNews> get nonDuplicatedNews {
     return news.fold(<WebNews>[], (List<WebNews> acc, WebNews next) {
       if (acc.isNotEmpty && acc.last.duplicateId == next.duplicateId) {
@@ -35,23 +40,11 @@ class Topic {
     });
   }
 
-  factory Topic.fromJsonObject(Map json) {
+  factory Topic.fromJsonObject(Map json, {List<TopicTrace> emptyTimeline}) {
     final List<WebNews> news = ((json["newsArray"] ?? []) as List<Map>).map((m) => new WebNews.fromJsonObject(m)).toList();
-    final List<Map> traces = json["timeline"] == null ? null : json["timeline"]["topics"] as List<Map>;
-    if (traces == null) {
-      return new Topic(
-        id: json["id"].toString(),
-        title: json["title"],
-        summary: json["summary"],
-        news: news,
-        order: json["order"].toString(),
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        publishDate: DateTime.parse(json["publishDate"]),
-      );
-    }
+    final List<Map> traces = json["timeline"] == null ? const [] : json["timeline"]["topics"] as List<Map>;
     final List<TopicTrace> timeline = traces.map((m) => new TopicTrace.fromJsonObject(m)).toList();
-    return new TracedTopic(
+    return new Topic(
       id: json["id"].toString(),
       title: json["title"],
       summary: json["summary"],
@@ -60,35 +53,9 @@ class Topic {
       createdAt: DateTime.parse(json["createdAt"]),
       updatedAt: DateTime.parse(json["updatedAt"]),
       publishDate: DateTime.parse(json["publishDate"]),
-      timeline: timeline,
+      timeline: timeline.isEmpty ? emptyTimeline : timeline,
     );
   }
-}
-
-@immutable
-class TracedTopic extends Topic {
-  const TracedTopic({
-    String id,
-    String title,
-    String summary,
-    List<WebNews> news,
-    String order,
-    DateTime createdAt,
-    DateTime updatedAt,
-    DateTime publishDate,
-    this.timeline,
-  }) : super(
-    id: id,
-    title: title,
-    summary: summary,
-    news: news,
-    order: order,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-    publishDate: publishDate,
-  );
-
-  final List<TopicTrace> timeline;
 }
 
 @immutable
