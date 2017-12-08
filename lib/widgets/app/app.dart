@@ -22,7 +22,7 @@ final Widget _app = new MaterialApp(
 class ReadhubApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new StoreProvider(
+    return new StoreContainer(
       store: store,
       child: new WorldClock(
         child: _app,
