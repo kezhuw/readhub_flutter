@@ -315,8 +315,9 @@ final Reducer<TopicState> _reducer = new MergedTypedReducer<TopicState>(
   ]
 );
 
-Store<TopicState> createTopicStore() {
+Store<TopicState> createTopicStore(String name) {
   return new Store<TopicState>(
+    name: name,
     initialState: new TopicState(),
     reducer: _reducer,
   );

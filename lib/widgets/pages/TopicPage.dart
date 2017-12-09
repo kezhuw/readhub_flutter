@@ -184,7 +184,7 @@ class TopicPage extends StatelessWidget {
       converter: (Store<TopicState> store) {
         return _TopicModel.fromStore(store, topicId);
       },
-      path: const [const ValueKey<String>('topics')],
+      path: const <String>['topics'],
       equals: identical,
       builder: (BuildContext context, _TopicModel model) {
         return new _Topic(model: model);

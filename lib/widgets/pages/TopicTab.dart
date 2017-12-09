@@ -71,7 +71,7 @@ class TopicTab extends StatelessWidget {
     BorderSide borderSide = new BorderSide(color: Theme.of(context).dividerColor, width: 0.0);
     return new StoreConnector(
       converter: _TopicTabModel.fromStore,
-      path: const [const ValueKey<String>('topics')],
+      path: const <String>['topics'],
       builder: (BuildContext context, _TopicTabModel model) {
         return new Container(
           color: Theme.of(context).canvasColor,

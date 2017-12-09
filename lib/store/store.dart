@@ -14,13 +14,10 @@ class AppState {
 
 Store<AppState> createStore() {
   return new Store<AppState>(
+    name: 'app',
     initialState: const AppState(),
     reducer: null,
-    children: <ValueKey<String>, Store<dynamic>>{
-      const ValueKey<String>("topics"): createTopicStore(),
-      const ValueKey<String>('news') : createNewsStore('/news'),
-      const ValueKey<String>('technews') : createNewsStore('/technews'),
-    },
+    children: [createTopicStore('topics'), createNewsStore('news', '/news'), createNewsStore('technews', '/technews')],
     middlewares: [thunkMiddleware],
   );
 }

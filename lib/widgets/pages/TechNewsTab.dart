@@ -12,7 +12,7 @@ class TechNewsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return new NewsStream(
       converter: NewsTabModel.fromStore,
-      path: const [const ValueKey<String>('technews')],
+      path: const <String>['technews'],
       newerNewsAction: fetchNewerNews,
       moreNewsAction: fetchMoreNews
     );

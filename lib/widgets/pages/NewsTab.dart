@@ -13,7 +13,7 @@ class NewsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new NewsStream(
-      path: const [const ValueKey<String>('news')],
+      path: const <String>['news'],
       converter: NewsTabModel.fromStore,
       newerNewsAction: fetchNewerNews,
       moreNewsAction: fetchMoreNews

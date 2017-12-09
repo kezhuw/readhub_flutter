@@ -23,7 +23,7 @@ class NewsStream extends StatelessWidget {
     @required this.moreNewsAction,
   });
 
-  final Iterable<dynamic> path;
+  final Iterable<String> path;
   final StoreConverter<NewsState, NewsTabModel> converter;
   final AsyncStoreAction newerNewsAction;
   final AsyncStoreAction moreNewsAction;

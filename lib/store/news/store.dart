@@ -193,8 +193,9 @@ final Reducer<NewsState> _reducer = new MergedTypedReducer<NewsState>(
   ]
 );
 
-Store<NewsState> createNewsStore(String endpoint) {
+Store<NewsState> createNewsStore(String name, String endpoint) {
   return new Store<NewsState>(
+    name: name,
     initialState: new NewsState(endpoint: endpoint),
     reducer: _reducer,
   );
