@@ -58,7 +58,7 @@ class NewsStream extends StatelessWidget {
               ThunkAction<NewsState, Null> action = new ThunkAction<NewsState, Null>(newerNewsAction);
               Store<NewsState> store = StoreProvider.of(context);
               store.dispatch(action);
-              await action.result;
+              return action.result;
             },
             child: new ListView.builder(
               addAutomaticKeepAlives: false,
