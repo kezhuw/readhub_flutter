@@ -219,7 +219,7 @@ TopicState handleCompleteTopicFetchAction(TopicState state, CompleteTopicFetchAc
   return state..completeTopicFetch(topicId: action.topicId, topic: action.topic, error: action.error);
 }
 
-Thunk<TopicState, Null> fetchTopic(String topicId) {
+AsyncThunk<TopicState, Null> fetchTopic(String topicId) {
   return (Store<TopicState> store) async {
     TopicState state = store.state;
     store.dispatch(new RequestTopicFetchAction(topicId));

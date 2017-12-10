@@ -13,7 +13,7 @@ dependencies:
 
   quiver: ^0.26.2
 
-  storey: ^0.1.0
+  storey: ^0.2.0
   flutter_storey: ^0.1.0
 
 dev_dependencies:

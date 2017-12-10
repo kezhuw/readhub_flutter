@@ -48,7 +48,7 @@ class TopicTab extends StatelessWidget {
 
   void _fetchMoreTopic(BuildContext context) {
     Store<TopicState> store = StoreProvider.of(context);
-    store.dispatch(new ThunkAction<TopicState, Null>(fetchMoreTopics));
+    store.dispatch(new AsyncThunkAction<TopicState, Null>(fetchMoreTopics));
   }
 
   Widget _buildItem(BuildContext context, _TopicTabModel model, int index) {
@@ -78,7 +78,7 @@ class TopicTab extends StatelessWidget {
           child: new RefreshIndicator(
             onRefresh: () {
               Store<TopicState> store = StoreProvider.of(context);
-              ThunkAction<TopicState, Null> action = new ThunkAction<TopicState, Null>(fetchNewerTopics);
+              AsyncThunkAction<TopicState, Null> action = new AsyncThunkAction<TopicState, Null>(fetchNewerTopics);
               store.dispatch(action);
               return action.result;
             },
