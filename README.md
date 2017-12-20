@@ -12,7 +12,7 @@ DISCLAIMER: This project do not claims any proprietorship to assets, including b
 
 For help getting started with Flutter, view online [documentation](http://flutter.io/).
 
-Flutter evolves quickly, breaking API is likelihood to happen. This project is compatible with version 0.0.18.
+Flutter evolves quickly, breaking API is likelihood to happen. This project is compatible with version 0.0.20.
 
 ## Known Issues
 
