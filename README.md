@@ -14,6 +14,10 @@ For help getting started with Flutter, view online [documentation](http://flutte
 
 Flutter evolves quickly, breaking API is likelihood to happen. This project is compatible with version 0.0.20.
 
+## Screenshots
+
+![Screenshot on iPhone 6S](https://i.imgur.com/ZeaRcWN.gif)
+
 ## Known Issues
 
 * API endpoints '/news' and '/technews' use timestamp as the sole cursor to paging data,
